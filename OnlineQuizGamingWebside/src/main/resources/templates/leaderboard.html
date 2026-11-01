@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>GameZone - Leaderboard</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #eef2ff;
+            margin: 0;
+            text-align: center;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .leaderboard-box {
+            width: 80%;
+            max-width: 850px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #4f46e5;
+            color: white;
+            padding: 15px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            font-size: 17px;
+        }
+
+        tr:hover {
+            background: #f3f4f6;
+        }
+
+        .rank {
+            font-size: 25px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 25px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="navbar">
+        🏆 GameZone Leaderboard
+    </div>
+
+
+    <div class="leaderboard-box">
+
+        <h2>🏆 Top Players</h2>
+
+
+		<table>
+
+		    <tr>
+		        <th>Rank</th>
+		        <th>Username</th>
+		        <th>Quiz</th>
+		        <th>Tic-Tac-Toe</th>
+		        <th>Rock Paper Scissors</th>
+		        <th>Memory Game</th>
+		        <th>Total</th>
+		        <th>Action</th>
+		    </tr>
+
+		    <tr th:each="row, stat : ${leaderboardRows}">
+
+		        <td class="rank">
+		            <span th:if="${stat.index == 0}">🥇</span>
+		            <span th:if="${stat.index == 1}">🥈</span>
+		            <span th:if="${stat.index == 2}">🥉</span>
+		            <span th:if="${stat.index > 2}"
+		                  th:text="${stat.index + 1}">
+		            </span>
+		        </td>
+
+		        <td th:text="${row.username}">
+		            Player
+		        </td>
+
+		        <td th:text="${row.quizScore}">
+		            0
+		        </td>
+
+		        <td th:text="${row.ticTacToeScore}">
+		            0
+		        </td>
+
+		        <td th:text="${row.rpsScore}">
+		            0
+		        </td>
+
+		        <td th:text="${row.memoryScore}">
+		            0
+		        </td>
+
+		        <td th:text="${row.totalScore}">
+		            0
+		        </td>
+
+		        <td>
+		            <a th:href="@{/delete-score/{username}(username=${row.username})}">
+		                🗑️ Delete
+		            </a>
+		        </td>
+
+		    </tr>
+
+		</table>
+		<script>
+		function deleteUser(username) {
+		    if (confirm("Delete this score?")) {
+		        window.location.href = "/delete-score/" + encodeURIComponent(username);
+		    }
+		}
+		</script>
+
+        <a href="/home" class="back-btn">
+            ⬅ Back to Home
+        </a>
+
+    </div>
+
+</body>
+
+</html>

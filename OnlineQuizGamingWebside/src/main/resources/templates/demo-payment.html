@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameZone Demo Payment</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #17132e;
+            color: white;
+        }
+
+        .payment-box {
+            width: 340px;
+            max-width: 85%;
+            padding: 30px;
+            border-radius: 18px;
+            background: #29234c;
+            text-align: center;
+        }
+
+        h1 { color: #d7b7ff; }
+
+        .amount {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .notice {
+            color: #ffe08a;
+            line-height: 1.5;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            border: 0;
+            border-radius: 8px;
+            background: #9b5cff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        a { color: #d7b7ff; }
+    </style>
+</head>
+<body>
+    <div class="payment-box">
+        <h1>GameZone</h1>
+        <h2>Demo Payment</h2>
+		<p>Game: <strong th:text="${gameName}">Quiz</strong></p>
+        <p class="amount">
+            ₹<span th:text="${amount}">10.00</span>
+        </p>
+
+        <p class="notice">
+            Demo only. No real money will be deducted.
+        </p>
+
+        <form th:action="@{/payments/demo/confirm}" method="post">
+            <input type="hidden" name="gameName" th:value="${gameName}">
+            <button type="submit">Confirm Demo Payment</button>
+        </form>
+
+        <p><a th:href="@{/home}">Cancel and return Home</a></p>
+    </div>
+</body>
+</html>

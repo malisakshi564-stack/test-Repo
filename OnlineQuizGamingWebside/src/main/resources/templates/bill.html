@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Bill</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f1f3f8;
+            padding: 30px;
+        }
+
+        .bill {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        h1 {
+            text-align: center;
+            color: #243b67;
+        }
+
+        .row {
+            padding: 12px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .amount {
+            font-size: 24px;
+            color: #16803c;
+            font-weight: bold;
+        }
+
+        .actions {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        a, button {
+            padding: 10px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            cursor: pointer;
+            background: #243b67;
+            color: white;
+        }
+
+        @media print {
+            .actions {
+                display: none;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .bill {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="bill">
+    <h1>Payment Bill</h1>
+    <p style="text-align:center;">Online Quiz Gaming Website</p>
+
+    <div class="row">
+        <span class="label">Bill ID:</span>
+        <span th:text="${payment.id}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Customer Name:</span>
+        <span th:text="${payment.customerName}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Email:</span>
+        <span th:text="${payment.customerEmail}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Game:</span>
+        <span th:text="${payment.gameName}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Payment Method:</span>
+        <span th:text="${payment.paymentMethod}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Transaction ID:</span>
+        <span th:text="${payment.transactionId}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Payment Date:</span>
+        <span th:text="${payment.paymentDate}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Payment Status:</span>
+        <span th:text="${payment.status}"></span>
+    </div>
+
+    <div class="row">
+        <span class="label">Total Amount:</span>
+        <span class="amount">
+            ₹<span th:text="${payment.amount}"></span>
+        </span>
+    </div>
+
+    <div class="actions">
+        <button onclick="window.print()">Print Bill</button>
+        <a th:href="@{/payments}">Back to Payments</a>
+    </div>
+</div>
+
+</body>
+</html>
+```

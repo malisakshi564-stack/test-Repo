@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GameZone - Memory Game</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #312e81);
+            color: white;
+            text-align: center;
+        }
+
+        .navbar {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.9);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #a78bfa;
+        }
+
+        .back {
+            color: white;
+            text-decoration: none;
+            background: #4f46e5;
+            padding: 10px 18px;
+            border-radius: 8px;
+        }
+
+        h1 {
+            margin-top: 35px;
+        }
+
+        .info {
+            margin: 15px;
+            font-size: 18px;
+        }
+
+        .game-board {
+            width: 420px;
+            max-width: 90%;
+            margin: 30px auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .card {
+            height: 90px;
+            background: #4f46e5;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+        .card.flipped,
+        .card.matched {
+            background: #7c3aed;
+        }
+
+        .card span {
+            display: none;
+        }
+
+        .card.flipped span,
+        .card.matched span {
+            display: block;
+        }
+
+        .restart {
+            border: none;
+            background: #dc2626;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .restart:hover {
+            background: #b91c1c;
+        }
+		.save-score {
+		    border: none;
+		    background: #16a34a;
+		    color: white;
+		    padding: 12px 25px;
+		    margin-left: 10px;
+		    border-radius: 8px;
+		    font-size: 16px;
+		    font-weight: bold;
+		    cursor: pointer;
+		    transition: 0.3s;
+		}
+
+		.save-score:hover {
+		    background: #15803d;
+		    transform: translateY(-2px);
+		}
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="logo">🎮 GameZone</div>
+
+        <a href="/home" class="back">
+            ⬅ Back to Home
+        </a>
+    </div>
+
+    <h1>🧠 Memory Game</h1>
+
+    <div class="info">
+        Moves: <span id="moves">0</span>
+    </div>
+
+    <div class="game-board" id="gameBoard"></div>
+
+    <button class="restart" onclick="startGame()">
+        🔄 Restart Game
+    </button>
+	<button id="saveScoreBtn"
+	        class="save-score"
+	        onclick="saveMemoryScore()"
+	       >
+	    💾 Save Final Score
+	</button>
+
+    <script>
+
+        const symbols = [
+            "🍎", "🍎",
+            "🍌", "🍌",
+            "🍇", "🍇",
+            "🍉", "🍉",
+            "🍓", "🍓",
+            "🍒", "🍒",
+            "🥝", "🥝",
+            "🍍", "🍍"
+        ];
+
+        let firstCard = null;
+        let secondCard = null;
+        let lockBoard = false;
+        let moves = 0;
+
+        function shuffle(array) {
+            array.sort(() => Math.random() - 0.5);
+        }
+
+        function startGame() {
+
+            const board = document.getElementById("gameBoard");
+			document.getElementById("saveScoreBtn").style.display = "none";
+			document.getElementById("saveScoreBtn").disabled = false;
+            board.innerHTML = "";
+
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+            moves = 0;
+
+            document.getElementById("moves").textContent = moves;
+
+            shuffle(symbols);
+
+            symbols.forEach(symbol => {
+
+                const card = document.createElement("div");
+
+                card.classList.add("card");
+
+                card.innerHTML = `
+                    <span>${symbol}</span>
+                `;
+
+                card.addEventListener("click", () => flipCard(card));
+
+                board.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+
+            if (lockBoard) return;
+
+            if (card === firstCard) return;
+
+            if (card.classList.contains("matched")) return;
+
+            card.classList.add("flipped");
+
+            if (!firstCard) {
+
+                firstCard = card;
+
+                return;
+            }
+
+            secondCard = card;
+
+            moves++;
+
+            document.getElementById("moves").textContent = moves;
+
+            checkMatch();
+        }
+
+        function checkMatch() {
+
+            const firstSymbol =
+                firstCard.querySelector("span").textContent;
+
+            const secondSymbol =
+                secondCard.querySelector("span").textContent;
+
+            if (firstSymbol === secondSymbol) {
+
+                firstCard.classList.add("matched");
+                secondCard.classList.add("matched");
+
+                resetCards();
+
+                checkWin();
+
+            } else {
+
+                lockBoard = true;
+
+                setTimeout(() => {
+
+                    firstCard.classList.remove("flipped");
+                    secondCard.classList.remove("flipped");
+
+                    resetCards();
+
+                }, 800);
+            }
+        }
+
+        function resetCards() {
+
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+        }
+		
+		function saveMemoryScore() {
+			
+			document.getElementById("saveScoreBtn").disabled = true;
+		    fetch("/save-score", {
+		        method: "POST",
+		        headers: {
+		            "Content-Type": "application/json"
+		        },
+		        body: JSON.stringify({
+		            gameName: "Memory Game",
+		            score: Math.max(100 - (moves * 5), 10)
+		        })
+		    })
+		    .then(response => response.text())
+		    .then(data => {
+
+		        alert("✅ " + data);
+
+		        document.getElementById("saveScoreBtn").style.display = "none";
+
+		    })
+		    .catch(error => {
+
+		        alert("❌ Score save failed!");
+
+		        console.error("Score save error:", error);
+
+		    });
+		}
+
+        function checkWin() {
+
+            const matchedCards =
+                document.querySelectorAll(".matched");
+				document.getElementById("saveScoreBtn").style.display = "inline-block";
+            if (matchedCards.length === symbols.length) {
+
+                setTimeout(() => {
+					saveMemoryScore();
+                    alert(
+                        "🎉 Congratulations! You completed the Memory Game in "
+                        + moves + " moves!"
+                    );
+
+                }, 300);
+            }
+        }
+
+        startGame();
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refund Requests | Game Zone</title>
+    <style>
+        body { padding:25px; background:#101426; color:white;
+               font-family:Arial,sans-serif; }
+        h1 { color:#a99aff; }
+        .table-wrap { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; background:#1a2037; }
+        th,td { padding:13px; border:1px solid #343b55; text-align:left; }
+        th { background:#5141b9; }
+        a { color:#c5bbff; }
+    </style>
+</head>
+<body>
+    <h1>Game Zone - Refund Requests</h1>
+
+    <p th:if="${param.success}">
+        Refund request saved successfully!
+    </p>
+
+    <p><a th:href="@{/payments}">← Back to Payment List</a></p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Refund ID</th>
+                    <th>Payment ID</th>
+                    <th>Customer Email</th>
+                    <th>Refund Amount</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Requested At</th>
+					<th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="r : ${refunds}">
+                    <td th:text="${r.id}"></td>
+                    <td th:text="${r.paymentId}"></td>
+                    <td th:text="${r.customerEmail}"></td>
+                    <td th:text="${r.refundAmount}"></td>
+                    <td th:text="${r.reason}"></td>
+                    <td th:text="${r.status}"></td>
+                    <td th:text="${r.requestedAt}"></td>
+					<td>
+					    <span th:if="${r.status == 'APPROVED'}">Approved</span>
+					    <span th:if="${r.status == 'REJECTED'}">Rejected</span>
+
+					    <div th:if="${r.status == 'REQUESTED'}">
+					        <form th:action="@{/refunds/update-status}" method="post">
+					            <input type="hidden" name="id" th:value="${r.id}">
+
+					            <button type="submit" name="status" value="APPROVED">
+					                Approve
+					            </button>
+
+					            <button type="submit" name="status" value="REJECTED">
+					                Reject
+					            </button>
+					        </form>
+					    </div>
+					</td>
+                </tr>
+				<tr th:if="${#lists.isEmpty(refunds)}">
+				    <td colspan="8">No refund requests found.</td>
+				</tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>GameZone - Admin Dashboard</title>
+
+    <style>
+
+		* {
+		    box-sizing: border-box;
+		    margin: 0;
+		    padding: 0;
+		}
+
+		body {
+		    font-family: Arial, sans-serif;
+		    min-height: 100vh;
+
+		    background: linear-gradient(135deg, #0f172a, #1e1b4b, #312e81);
+
+		    color: white;
+		}
+
+		/* NAVBAR */
+
+		.navbar {
+		    padding: 20px 40px;
+
+		    display: flex;
+		    align-items: center;
+		    justify-content: space-between;
+
+		    background: rgba(15,23,42,0.95);
+
+		    border-bottom: 1px solid rgba(255,255,255,0.1);
+		}
+
+		.logo {
+		    font-size: 27px;
+		    font-weight: bold;
+		    color: #c4b5fd;
+		}
+
+		.nav-buttons {
+		    display: flex;
+		    gap: 10px;
+		}
+
+		.nav-buttons a {
+		    text-decoration: none;
+		    color: white;
+
+		    padding: 10px 16px;
+
+		    border-radius: 8px;
+
+		    transition: 0.3s;
+		}
+
+		.nav-buttons a:hover {
+		    transform: translateY(-2px);
+		}
+
+		.home-btn {
+		    background: #4f46e5;
+		}
+
+		.logout-btn {
+		    background: #dc2626;
+		}
+
+		/* CONTENT */
+
+		.container {
+		    width: 90%;
+		    max-width: 1100px;
+
+		    margin: 50px auto;
+		}
+
+		.welcome {
+		    text-align: center;
+		    margin-bottom: 40px;
+		}
+
+		.welcome h1 {
+		    font-size: 38px;
+		    margin-bottom: 10px;
+		}
+
+		.welcome span {
+		    color: #a78bfa;
+		}
+
+		.welcome p {
+		    color: #cbd5e1;
+		    font-size: 17px;
+		}
+
+		/* STAT CARDS */
+
+		.stats {
+		    display: grid;
+
+		    grid-template-columns: repeat(3, 1fr);
+
+		    gap: 25px;
+
+		    margin-bottom: 40px;
+		}
+
+		.stat-card {
+		    padding: 30px;
+
+		    text-align: center;
+
+		    background: rgba(255,255,255,0.08);
+
+		    border: 1px solid rgba(255,255,255,0.15);
+
+		    border-radius: 18px;
+
+		    backdrop-filter: blur(10px);
+
+		    transition: 0.3s;
+		}
+
+		.stat-card:hover {
+		    transform: translateY(-8px);
+
+		    border-color: #8b5cf6;
+
+		    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+		}
+
+		.stat-icon {
+		    font-size: 45px;
+		    margin-bottom: 12px;
+		}
+
+		.stat-card h2 {
+		    font-size: 32px;
+		    color: #c4b5fd;
+		    margin-bottom: 5px;
+		}
+
+		.stat-card p {
+		    color: #cbd5e1;
+		}
+
+		/* MENU */
+
+		.admin-menu {
+		    display: grid;
+
+		    grid-template-columns: repeat(3, 1fr);
+
+		    gap: 20px;
+		}
+
+		.menu-card {
+		    padding: 25px;
+
+		    text-align: center;
+
+		    background: rgba(255,255,255,0.07);
+
+		    border: 1px solid rgba(255,255,255,0.12);
+
+		    border-radius: 16px;
+
+		    transition: 0.3s;
+		}
+
+		.menu-card:hover {
+		    transform: translateY(-6px);
+
+		    background: rgba(255,255,255,0.12);
+
+		    border-color: #8b5cf6;
+		}
+
+		.menu-icon {
+		    font-size: 40px;
+		    margin-bottom: 12px;
+		}
+
+		.menu-card h3 {
+		    margin-bottom: 15px;
+		}
+
+		.menu-card a {
+		    display: inline-block;
+
+		    padding: 10px 20px;
+
+		    border-radius: 8px;
+
+		    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+
+		    color: white;
+
+		    text-decoration: none;
+
+		    font-weight: bold;
+
+		    transition: 0.3s;
+		}
+
+		.menu-card a:hover {
+		    transform: scale(1.05);
+		}
+
+		/* RESPONSIVE */
+
+		@media(max-width: 800px) {
+
+		    .navbar {
+		        flex-direction: column;
+		        gap: 15px;
+		    }
+
+		    .stats,
+		    .admin-menu {
+		        grid-template-columns: 1fr;
+		    }
+
+		    .container {
+		        width: 92%;
+		    }
+
+		    .welcome h1 {
+		        font-size: 30px;
+		    }
+			.nav-buttons {
+			    display: flex;
+			    gap: 12px;
+			    align-items: center;
+			}
+
+			.nav-buttons a {
+			    text-decoration: none;
+			    color: white;
+			    padding: 10px 18px;
+			    border-radius: 8px;
+			    font-weight: bold;
+			    transition: 0.3s;
+			}
+
+			.home-btn {
+			    background: #4f46e5;
+			}
+
+			.home-btn:hover {
+			    background: #7c3aed;
+			    transform: translateY(-2px);
+			}
+
+			.logout-btn {
+			    background: #dc2626;
+			}
+
+			.logout-btn:hover {
+			    background: #b91c1c;
+			    transform: translateY(-2px);
+			}
+		}
+    </style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+
+<div class="navbar">
+
+    <div class="logo">
+        🎮 GameZone Admin
+    </div>
+
+    <div class="nav-buttons">
+
+        <a href="/home" class="home-btn">
+            🏠 Home
+        </a>
+
+        <a href="/admin-logout" class="logout-btn">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>
+
+
+<div class="container">
+
+    <!-- Welcome -->
+
+    <div class="welcome">
+
+        <h1>
+            Welcome Admin,
+            <span th:text="${adminUsername}">Admin</span>! 👋
+        </h1>
+
+        <p>
+            Manage and monitor the GameZone platform.
+        </p>
+
+    </div>
+
+
+    <!-- Statistics -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                👥
+            </div>
+
+            <h3>Total Users</h3>
+
+            <p th:text="${totalUsers}">
+                0
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🏆
+            </div>
+
+            <h3>Total Scores</h3>
+
+            <p th:text="${totalScores}">
+                0
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🎮
+            </div>
+
+            <h3>Total Games</h3>
+
+            <p th:text="${totalGames}">
+                3
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Admin Options -->
+
+	<!-- Admin Options -->
+	<div class="admin-menu">
+
+	    <!-- Users -->
+	    <div class="menu-card">
+	        <div class="menu-icon">
+	            👥
+	        </div>
+
+	        <h3>Users</h3>
+     <p>
+	            View all registered GameZone users.
+	        </p>
+			<br> 
+	        <a href="/admin-users">
+	            View Users
+	        </a>
+	    </div>
+
+
+	    <!-- Leaderboard -->
+	    <div class="menu-card">
+	        <div class="menu-icon">
+	            🏆
+	        </div>
+
+	        <h3>Leaderboard</h3>
+
+	        <p>
+	            View all player scores and game results.
+	        </p>
+			<br>
+	        <a href="/admin-scores">
+	            View Leaderboard
+	        </a>
+	    </div>
+
+
+	    <!-- Games -->
+	    <div class="menu-card">
+	        <div class="menu-icon">
+	            🎮
+	        </div>
+
+	        <h3>Games</h3>
+
+	        <p>
+	            View available games in GameZone.
+	        </p>
+			<br>
+	        <a href="/admin-games">
+	            Manage Games
+	        </a>
+	    </div>
+
+	</div>
+
+      
+</div>
+
+
+<footer>
+
+    © 2026 GameZone | Admin Panel
+
+</footer>
+
+
+</body>
+
+</html>

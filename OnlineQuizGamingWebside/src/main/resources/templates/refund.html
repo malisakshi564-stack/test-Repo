@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill / Refund | Game Zone</title>
+    <style>
+        body { margin:0; padding:30px; background:#101426; color:white;
+               font-family:Arial,sans-serif; }
+        .card { max-width:550px; margin:auto; padding:25px;
+                background:#1a2037; border-radius:12px; }
+        h1 { color:#a99aff; }
+        label { display:block; margin-top:16px; }
+        input,textarea { width:100%; box-sizing:border-box; margin-top:7px;
+                         padding:11px; border-radius:5px; border:1px solid #454c69; }
+        button { margin-top:20px; padding:12px 20px; background:#6758f5;
+                 color:white; border:0; border-radius:6px; cursor:pointer; }
+        .error { color:#ff9c9c; }
+        a { color:#c5bbff; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h1>Bill / Refund Request</h1>
+
+    <p>Payment ID: <strong th:text="${payment.id}"></strong></p>
+    <p>Customer: <span th:text="${payment.customerName}"></span></p>
+    <p>Game: <span th:text="${payment.gameName}"></span></p>
+    <p>Paid Amount: ₹<span th:text="${payment.amount}"></span></p>
+    <p>Payment Status: <span th:text="${payment.status}"></span></p>
+
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+
+    <form th:action="@{/refunds/submit}" method="post">
+        <input type="hidden" name="paymentId" th:value="${payment.id}">
+
+        <label for="refundAmount">Refund Amount (₹)</label>
+        <input id="refundAmount" type="number" name="refundAmount"
+               min="0.01" step="0.01" th:max="${payment.amount}"
+               required>
+
+        <label for="reason">Reason for Refund</label>
+        <textarea id="reason" name="reason" rows="4"
+                  maxlength="500" required></textarea>
+
+        <button type="submit">Submit Refund Request</button>
+    </form>
+
+    <p><a th:href="@{/payments}">← Back to Payments</a></p>
+</div>
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>GameZone - Tic Tac Toe</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #312e81);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .game-container {
+            width: 90%;
+            max-width: 520px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 22px;
+            padding: 35px;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+        }
+
+        h1 {
+            font-size: 34px;
+            color: #c4b5fd;
+            margin-bottom: 10px;
+        }
+
+        #message {
+            margin: 15px 0 25px;
+            font-size: 20px;
+            color: #ddd6fe;
+            font-weight: bold;
+        }
+
+        .board {
+            width: 330px;
+            height: 330px;
+            margin: 20px auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .cell {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 15px;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .cell:hover {
+            background: rgba(124,58,237,0.35);
+            border-color: #8b5cf6;
+            transform: scale(1.04);
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            margin: 8px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(124,58,237,0.4);
+        }
+
+        .save-score {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+        }
+
+        .home-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 22px;
+            background: #4f46e5;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .home-btn:hover {
+            background: #4338ca;
+        }
+
+        @media(max-width: 500px) {
+
+            .game-container {
+                padding: 25px 15px;
+            }
+
+            .board {
+                width: 280px;
+                height: 280px;
+            }
+
+            .cell {
+                font-size: 40px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="game-container">
+
+    <div style="font-size:20px; margin:15px;">
+
+        Logged in User:
+
+        <b th:text="${username}">NOT FOUND</b>
+
+    </div>
+
+    <span id="loggedUsername"
+          th:text="${username}"
+          style="display:none;">
+    </span>
+
+
+    <h1>❌ Tic-Tac-Toe ⭕</h1>
+
+    <p id="message">🎮 Your Turn - X</p>
+
+
+    <div class="board">
+
+        <button class="cell" onclick="makeMove(0)"></button>
+        <button class="cell" onclick="makeMove(1)"></button>
+        <button class="cell" onclick="makeMove(2)"></button>
+
+        <button class="cell" onclick="makeMove(3)"></button>
+        <button class="cell" onclick="makeMove(4)"></button>
+        <button class="cell" onclick="makeMove(5)"></button>
+
+        <button class="cell" onclick="makeMove(6)"></button>
+        <button class="cell" onclick="makeMove(7)"></button>
+        <button class="cell" onclick="makeMove(8)"></button>
+
+    </div>
+
+
+    <button class="restart" onclick="restartGame()">
+        🔄 Restart Game
+    </button>
+
+
+    <button class="save-score"
+            id="saveScoreBtn"
+            onclick="saveFinalScore()"
+            style="display:none;">
+
+        💾 Save Final Score
+
+    </button>
+
+
+    <br>
+
+
+    <a href="/home" class="home-btn">
+        🏠 Back to Home
+    </a>
+
+</div>
+
+
+<script>
+
+let board = [
+    "", "", "",
+    "", "", "",
+    "", "", ""
+];
+
+let currentPlayer = "X";
+
+let gameOver = false;
+
+let finalScore = 0;
+
+
+/* =========================
+   PLAYER MOVE
+========================= */
+
+function makeMove(index) {
+
+    // Player can play only during X turn
+    if (
+        board[index] !== "" ||
+        gameOver ||
+        currentPlayer !== "X"
+    ) {
+        return;
+    }
+
+
+    board[index] = "X";
+
+    document
+        .getElementsByClassName("cell")[index]
+        .innerText = "X";
+
+
+    /* Check Player Win */
+
+    if (checkWinner()) {
+
+        document.getElementById("message")
+            .innerText = "🎉 You Win!";
+
+        gameOver = true;
+
+        finalScore = 1;
+
+        document.getElementById("saveScoreBtn")
+            .style.display = "inline-block";
+
+        return;
+    }
+
+
+    /* Check Draw */
+
+    if (!board.includes("")) {
+
+        document.getElementById("message")
+            .innerText = "🤝 Game Draw!";
+
+        gameOver = true;
+
+        finalScore = 0;
+
+        document.getElementById("saveScoreBtn")
+            .style.display = "inline-block";
+
+        return;
+    }
+
+
+    /* Computer Turn */
+
+    currentPlayer = "O";
+
+    document.getElementById("message")
+        .innerText = "🤖 Computer's Turn";
+
+
+    setTimeout(computerMove, 500);
+
+}
+
+
+/* =========================
+   FIND WINNING / BLOCK MOVE
+========================= */
+
+function findWinningMove(player) {
+
+    const winningPatterns = [
+
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+
+        [0, 4, 8],
+        [2, 4, 6]
+
+    ];
+
+
+    for (let pattern of winningPatterns) {
+
+        let a = pattern[0];
+        let b = pattern[1];
+        let c = pattern[2];
+
+
+        /* XX_ */
+
+        if (
+            board[a] === player &&
+            board[b] === player &&
+            board[c] === ""
+        ) {
+            return c;
+        }
+
+
+        /* X_X */
+
+        if (
+            board[a] === player &&
+            board[c] === player &&
+            board[b] === ""
+        ) {
+            return b;
+        }
+
+
+        /* _XX */
+
+        if (
+            board[b] === player &&
+            board[c] === player &&
+            board[a] === ""
+        ) {
+            return a;
+        }
+
+    }
+
+
+    return -1;
+}
+
+
+/* =========================
+   COMPUTER MOVE
+   MEDIUM LEVEL
+========================= */
+
+function computerMove() {
+
+    if (gameOver) {
+        return;
+    }
+
+
+    let emptyCells = [];
+
+
+    /* Find Empty Cells */
+
+    for (let i = 0; i < board.length; i++) {
+
+        if (board[i] === "") {
+            emptyCells.push(i);
+        }
+
+    }
+
+
+    if (emptyCells.length === 0) {
+        return;
+    }
+
+
+    let move = -1;
+
+
+    /*
+       MEDIUM LEVEL
+
+       60% intelligent move
+       40% random move
+    */
+
+    if (Math.random() < 0.60) {
+
+
+        /* Computer tries to WIN */
+
+        move = findWinningMove("O");
+
+
+        /* Computer tries to BLOCK player */
+
+        if (move === -1) {
+
+            move = findWinningMove("X");
+
+        }
+
+    }
+
+
+    /* Random move */
+
+    if (move === -1) {
+
+        move =
+            emptyCells[
+                Math.floor(
+                    Math.random() * emptyCells.length
+                )
+            ];
+
+    }
+
+
+    /* Computer places O */
+
+    board[move] = "O";
+
+
+    document
+        .getElementsByClassName("cell")[move]
+        .innerText = "O";
+
+
+    /* Check Computer Win */
+
+    if (checkWinner()) {
+
+        document.getElementById("message")
+            .innerText = "🤖 Computer Wins!";
+
+        gameOver = true;
+
+        finalScore = 0;
+
+        document.getElementById("saveScoreBtn")
+            .style.display = "inline-block";
+
+        return;
+    }
+
+
+    /* Check Draw */
+
+    if (!board.includes("")) {
+
+        document.getElementById("message")
+            .innerText = "🤝 Game Draw!";
+
+        gameOver = true;
+
+        finalScore = 0;
+
+        document.getElementById("saveScoreBtn")
+            .style.display = "inline-block";
+
+        return;
+    }
+
+
+    /* Back to Player */
+
+    currentPlayer = "X";
+
+    document.getElementById("message")
+        .innerText = "🎮 Your Turn - X";
+
+}
+
+
+/* =========================
+   CHECK WINNER
+========================= */
+
+function checkWinner() {
+
+    const winningPatterns = [
+
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+
+        [0, 4, 8],
+        [2, 4, 6]
+
+    ];
+
+
+    for (let pattern of winningPatterns) {
+
+        const a = pattern[0];
+        const b = pattern[1];
+        const c = pattern[2];
+
+
+        if (
+            board[a] !== "" &&
+            board[a] === board[b] &&
+            board[a] === board[c]
+        ) {
+
+            return true;
+
+        }
+
+    }
+
+
+    return false;
+}
+
+
+/* =========================
+   SAVE SCORE
+========================= */
+
+function saveScore(score) {
+
+    const username =
+        document
+            .getElementById("loggedUsername")
+            .innerText
+            .trim();
+
+
+    if (username === "") {
+
+        alert("Username not found!");
+
+        return;
+
+    }
+
+
+    fetch("/save-score", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+
+            username: username,
+
+            gameName: "Tic-Tac-Toe",
+
+            score: score
+
+        })
+
+    })
+
+
+    .then(function(response) {
+
+        return response.text();
+
+    })
+
+
+    .then(function(data) {
+
+        alert("🏆 Score Saved Successfully!");
+
+    })
+
+
+    .catch(function(error) {
+
+        console.error(error);
+
+        alert("❌ Score not saved!");
+
+    });
+
+}
+
+
+/* =========================
+   RESTART GAME
+========================= */
+
+function restartGame() {
+
+    board = [
+
+        "", "", "",
+        "", "", "",
+        "", "", ""
+
+    ];
+
+
+    currentPlayer = "X";
+
+    gameOver = false;
+
+    finalScore = 0;
+
+
+    const cells =
+        document.getElementsByClassName("cell");
+
+
+    for (let cell of cells) {
+
+        cell.innerText = "";
+
+    }
+
+
+    /* Hide Save Button */
+
+    document.getElementById("saveScoreBtn")
+        .style.display = "none";
+
+
+    document.getElementById("saveScoreBtn")
+        .disabled = false;
+
+
+    document.getElementById("message")
+        .innerText = "🎮 Your Turn - X";
+
+}
+
+
+/* =========================
+   SAVE FINAL SCORE
+========================= */
+
+function saveFinalScore() {
+
+    saveScore(finalScore);
+
+
+    document.getElementById("saveScoreBtn")
+        .style.display = "none";
+
+}
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <title>Daily Challenge - GameZone</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #312e81);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            background: rgba(0, 0, 0, 0.25);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: white;
+            background: #4f46e5;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 70px auto;
+            padding: 20px;
+        }
+
+        .challenge-card {
+            background: rgba(255,255,255,0.12);
+            padding: 45px 30px;
+            border-radius: 22px;
+            text-align: center;
+        }
+
+        .challenge-icon {
+            font-size: 70px;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .date {
+            color: #c4b5fd;
+            margin-bottom: 30px;
+        }
+
+        .challenge-text {
+            background: rgba(255,255,255,0.08);
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .game-name {
+            color: #c4b5fd;
+            margin-bottom: 30px;
+        }
+
+        .play-btn {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background: #7c3aed;
+            padding: 13px 25px;
+            border-radius: 9px;
+            font-weight: bold;
+        }
+
+        .play-btn:hover {
+            background: #6d28d9;
+        }
+		.complete-btn {
+		    margin-top: 15px;
+		    padding: 13px 25px;
+		    border: none;
+		    border-radius: 9px;
+		    background: #16a34a;
+		    color: white;
+		    font-weight: bold;
+		    cursor: pointer;
+		}
+
+		.complete-btn:hover {
+		    background: #15803d;
+		}
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="navbar">
+
+        <div class="logo">
+            🎮 GameZone
+        </div>
+
+        <a href="/home" class="back-btn">
+            🏠 Back to Home
+        </a>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="challenge-card">
+
+            <div class="challenge-icon">
+                🎯
+            </div>
+
+            <h1>Daily Challenge</h1>
+
+            <div class="date">
+                📅 <span th:text="${challenge.challengeDate}">
+                    Date
+                </span>
+            </div>
+
+            <div class="challenge-text"
+                 th:text="${challenge.challengeText}">
+                Today's Challenge
+            </div>
+
+            <div class="game-name">
+
+                🎮 Game:
+                <strong th:text="${challenge.gameName}">
+                    Any Game
+                </strong>
+
+            </div>
+
+            <a href="/home" class="play-btn">
+                🎮 Play Now
+            </a>
+			
+			<form action="/complete-daily-challenge"
+			      method="post"
+			      th:if="${!challenge.completed}">
+
+			    <button type="submit" class="complete-btn">
+			        ✅ Complete Challenge
+			    </button>
+
+			</form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

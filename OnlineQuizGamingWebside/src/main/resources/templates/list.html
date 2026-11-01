@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment List | Game Zone</title>
+    <style>
+        body { margin:0; padding:25px; background:#101426; color:white;
+               font-family:Arial,sans-serif; }
+        h1 { color:#a99aff; }
+        .table-wrap { overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; background:#1a2037; }
+        th,td { padding:13px; border:1px solid #343b55; text-align:left; }
+        th { background:#5141b9; }
+        a { color:#bdb2ff; }
+        .btn { display:inline-block; padding:8px 12px; background:#6758f5;
+               color:white; text-decoration:none; border-radius:5px; }
+        .empty { padding:20px; color:#c2c7d8; }
+    </style>
+</head>
+<body>
+    <h1>🎮 Game Zone - Payment List</h1>
+    <p>All payment records and bill details</p>
+
+    <p>
+        <a class="btn" th:href="@{/refunds}">View Refund Requests</a>
+        <a th:href="@{/}">Home</a>
+    </p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Game</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Transaction ID</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Bill / Refund</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="p : ${payments}">
+                    <td th:text="${p.id}"></td>
+                    <td th:text="${p.customerName}"></td>
+                    <td th:text="${p.customerEmail}"></td>
+                    <td th:text="${p.gameName}"></td>
+                    <td th:text="${p.amount}"></td>
+                    <td th:text="${p.paymentMethod}"></td>
+                    <td th:text="${p.transactionId}"></td>
+                    <td th:text="${p.status}"></td>
+                    <td th:text="${p.paymentDate}"></td>
+                    <td>
+                        <a th:if="${p.status == 'PAID'}"
+                           th:href="@{/refunds/new(paymentId=${p.id})}">
+                           Bill / Request Refund
+                        </a>
+                        <span th:unless="${p.status == 'PAID'}">
+                            No refund available
+                        </span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(payments)}">
+                    <td colspan="10" class="empty">
+                        No payment records found.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
